@@ -17,3 +17,9 @@ The app can be summarized in the following steps:
 - Set up the live table
 - Pull data from ScoresAndOdds once every 15 seconds
   - This is more complex, as it parses the raw HTML from the page, and manages instances of missing data
+
+## Current state
+
+If you use Deephaven v0.9 or earlier, replace the line with `logRowPermissive` with `logRow`.  Otherwise, it should work as intended.
+
+This app is functional, but in early development stages.  It will be updated and improved over time for a better user experience, cleaner code, and faster speeds.
