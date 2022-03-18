@@ -1,0 +1,38 @@
+version: "3.4"
+
+services:
+  server:
+    image: deephaven-examples/numpy-and-deephaven:latest
+    expose:
+      - '8080'
+    volumes:
+      - ./data:/data
+      - ./data/notebooks:/data/notebooks
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xmx4g -Ddeephaven.console.type=python -Ddeephaven.application.dir=/app.d
+
+  web:
+    image: ghcr.io/deephaven/web:${VERSION:-edge}
+    expose:
+      - '80'
+    volumes:
+      - ./data:/data
+      - ./data/notebooks:/data/notebooks
+
+  grpc-proxy:
+    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-edge}
+    environment:
+      - BACKEND_ADDR=server:8080
+    depends_on:
+      - server
+    expose:
+      - '8080'
+
+  envoy:
+    image: ghcr.io/deephaven/envoy:${VERSION:-edge}
+    depends_on:
+      - web
+      - grpc-proxy
+      - server
+    ports:
+      - "${PORT:-10000}:10000"
