@@ -232,7 +232,7 @@ def pull_ncaab_betting_data(url):
             away_moneyline = money_lines[0].item()
             home_moneyline = money_lines[1].item()
 
-            table_writer.logRow(
+            table_writer.logRowPermissive(
                 away_team, home_team, away_team_wins, away_team_losses, home_team_wins, home_team_losses,
                 away_score, home_score,
                 o_u_open, o_u_moves1, o_u_moves2, o_u_moves3, o_u_curr,
