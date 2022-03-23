@@ -1,6 +1,6 @@
 # Live NCAAB betting data app
 
-This repository contains all that is necessary to pull live sports betting data from ScoresAndOdds.com.  The app itself uses nothing outside of Deephaven's base installation to run.  It uses entirely Python to run, with the following three modules being the most critical to its usage:
+This repository contains all that is necessary to pull live sports betting data from ScoresAndOdds.com.  The app itself uses nothing outside of Deephaven's base installation to run.  It does, by default, install the [`sportsreference`](https://github.com/roclark/sportsipy) package for historical data.  It uses entirely Python to run, with the following three modules being the most critical to its usage:
 
 - `urllib`
 - `re`
@@ -18,8 +18,8 @@ The app can be summarized in the following steps:
 - Pull data from ScoresAndOdds once every 15 seconds
   - This is more complex, as it parses the raw HTML from the page, and manages instances of missing data
 
-## Current state
+## Usage and updates
 
 If you use Deephaven v0.9 or earlier, replace the line with `logRowPermissive` with `logRow`.  Otherwise, it should work as intended.
 
-This app is functional, but in early development stages.  It will be updated and improved over time for a better user experience, cleaner code, and faster speeds.
+This repository will be updated for cleaner code, faster execution, and better interface.  Check the `updates.md` file for date-time tagged update information.
