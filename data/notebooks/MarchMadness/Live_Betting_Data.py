@@ -14,7 +14,7 @@ import re
 date_of_games = datetime.today().strftime("%Y-%m-%d")
 
 # Enter the number of times you'd like to pull here
-total_num_pulls = 100
+total_num_pulls = 2
 
 url = "https://www.scoresandodds.com/ncaab?date=" + date_of_games
 
@@ -22,22 +22,23 @@ ndp = 6
 nml = 2
 
 column_names = [
-    "AwayTeam", "HomeTeam", "AwayTeam_Wins", "AwayTeam_Losses", "HomeTeam_Wins", "HomeTeam_Losses",
-    "AwayTeam_Score", "HomeTeam_Score",
-    "OU_Open", "OU_Movements1", "OU_Movements2", "OU_Movements3", "OU_Current",
-    "Spread_Open", "Spread_Movements1", "Spread_Movements2", "Spread_Movements3", "Spread_Current",
-    "HomeLine_Open", "HomeLine_Movements1", "HomeLine_Movement2", "HomeLine_Movements3", "HomeLine_Current",
-    "AwayLine_Open", "AwayLine_Movements1", "AwayLine_Movement2", "AwayLine_Movements3", "AwayLine_Current",
-    "HomeTeam_Moneyline", "AwayTeam_Moneyline"
+    "Matchup", "AwayTeam_Score", "HomeTeamScore", 
+    "OU_Open", "OU_Movements", "OU_Current", "OU_Live",
+    "OU_Risk_Open", "OU_Risk_Movements", "OU_Risk_Current", "OU_Risk_Live",
+    "Spread_Open", "Spread_Movements", "Spread_Current", "Spread_Live",
+    "Spread_Risk_Open", "Spread_Risk_Movements", "Spread_Risk_Current", "Spread_Risk_Live",
+    "Away_Moneyline", "Home_Moneyline",
+    "AwayTeam_Record", "HomeTeam_Record"
 ]
+
 column_types = [
-    dht.string, dht.string, dht.int_, dht.int_, dht.int_, dht.int_,
+    dht.string, dht.int_, dht.int_, 
+    dht.string, dht.string_array, dht.string, dht.string, 
+    dht.int_, dht.int_array, dht.int_, dht.int_,
+    dht.double, dht.double_array, dht.double, dht.double,
+    dht.int_, dht.int_array, dht.int_, dht.int_,
     dht.int_, dht.int_,
-    dht.string, dht.string, dht.string, dht.string, dht.string,
-    dht.double, dht.double, dht.double, dht.double, dht.double,
-    dht.int_, dht.int_, dht.int_, dht.int_, dht.int_,
-    dht.int_, dht.int_, dht.int_, dht.int_, dht.int_,
-    dht.int_, dht.int_
+    dht.string, dht.string
 ]
 
 table_writer = DynamicTableWriter(
@@ -190,56 +191,50 @@ def pull_ncaab_betting_data(url):
         for i in range(num_matchups):
             away_team_index = 2 * i
             home_team_index = 2 * i + 1
-            # Team names, wins, and losses
-            away_team = away_teams[i]
-            home_team = home_teams[i]
-            away_team_wins = team_wins[away_team_index]
-            away_team_losses = team_losses[away_team_index]
-            home_team_wins = team_wins[home_team_index]
-            home_team_losses = team_losses[home_team_index]
-            # Scores
+            # Team names, scores, wins, and losses
+            matchup = " - ".join([away_teams[i], home_teams[i]])
             away_score = away_team_scores[i].item()
             home_score = home_team_scores[i].item()
             # Over/under
             over_unders = o_u_predictions[i]
             o_u_open = over_unders[0].item()
-            o_u_moves1 = over_unders[1].item()
-            o_u_moves2 = over_unders[2].item()
-            o_u_moves3 = over_unders[3].item()
+            o_u_moves = jpy.array("java.lang.String", [over_unders[i].item() for i in range(1, 4)])
             o_u_curr = over_unders[4].item()
+            o_u_live = over_unders[5].item()
+            # Over/under risk
+            o_u_risks = away_line_predictions[i]
+            o_u_risk_open = o_u_risks[0].item()
+            o_u_risk_moves = jpy.array("int", [o_u_risks[i].item() for i in range(1, 4)])
+            o_u_risk_curr = o_u_risks[4].item()
+            o_u_risk_live = o_u_risks[5].item()
             # Spread
             spreads = spread_predictions[i]
             spread_open = spreads[0].item()
-            spread_moves1 = spreads[1].item()
-            spread_moves2 = spreads[2].item()
-            spread_moves3 = spreads[3].item()
+            spread_moves = jpy.array("double", [spreads[i].item() for i in range(1, 4)])
             spread_curr = spreads[4].item()
-            # Lines
-            away_lines = away_line_predictions[i]
-            away_line_open = away_lines[0].item()
-            away_line_moves1 = away_lines[1].item()
-            away_line_moves2 = away_lines[2].item()
-            away_line_moves3 = away_lines[3].item()
-            away_line_curr = away_lines[4].item()
-            home_lines = home_line_predictions[i]
-            home_line_open = home_lines[0].item()
-            home_line_moves1 = home_lines[1].item()
-            home_line_moves2 = home_lines[2].item()
-            home_line_moves3 = home_lines[3].item()
-            home_line_curr = home_lines[4].item()
+            spread_live = spreads[5].item()
+            # Spread risk
+            spread_risks = home_line_predictions[i]
+            spread_risk_open = spread_risks[0].item()
+            spread_risk_moves = jpy.array("int", [spread_risks[i] for i in range(1, 4)])
+            spread_risk_curr = spread_risks[4].item()
+            spread_risk_live = spread_risks[5].item()
             # Moneylines
             money_lines = moneyline_predictions[i]
             away_moneyline = money_lines[0].item()
             home_moneyline = money_lines[1].item()
+            # Team records
+            away_team_record = " - ".join([str(team_wins[away_team_index]), str(team_losses[away_team_index])])
+            home_team_record = " - ".join([str(team_wins[home_team_index]), str(team_losses[home_team_index])])
 
-            table_writer.logRowPermissive(
-                away_team, home_team, away_team_wins, away_team_losses, home_team_wins, home_team_losses,
-                away_score, home_score,
-                o_u_open, o_u_moves1, o_u_moves2, o_u_moves3, o_u_curr,
-                spread_open, spread_moves1, spread_moves2, spread_moves3, spread_curr,
-                away_line_open, away_line_moves1, away_line_moves2, away_line_moves3, away_line_curr,
-                home_line_open, home_line_moves1, home_line_moves2, home_line_moves3, home_line_curr,
-                away_moneyline, home_moneyline
+            table_writer.logRow(
+                matchup, away_score, home_score,
+                o_u_open, o_u_moves, o_u_curr, o_u_live,
+                o_u_risk_open, o_u_risk_moves, o_u_risk_curr, o_u_risk_live,
+                spread_open, spread_moves, spread_curr, spread_live, 
+                spread_risk_open, spread_risk_moves, spread_risk_curr, spread_risk_live,
+                away_moneyline, home_moneyline,
+                away_team_record, home_team_record
             )
     
         end = time.time()
