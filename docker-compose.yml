@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   server:
-    image: deephaven-examples/numpy-and-deephaven:latest
+    image: deephaven-examples/sports-betting-data:latest
     expose:
       - '8080'
     volumes:
