@@ -12,7 +12,7 @@ services:
       - JAVA_TOOL_OPTIONS=-Xmx4g -Ddeephaven.console.type=python -Ddeephaven.application.dir=/app.d
 
   web:
-    image: ghcr.io/deephaven/web:${VERSION:-edge}
+    image: ghcr.io/deephaven/web:${VERSION:-latest}
     expose:
       - '80'
     volumes:
@@ -20,7 +20,7 @@ services:
       - ./data/notebooks:/data/notebooks
 
   grpc-proxy:
-    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-edge}
+    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-latest}
     environment:
       - BACKEND_ADDR=server:8080
     depends_on:
@@ -29,7 +29,7 @@ services:
       - '8080'
 
   envoy:
-    image: ghcr.io/deephaven/envoy:${VERSION:-edge}
+    image: ghcr.io/deephaven/envoy:${VERSION:-latest}
     depends_on:
       - web
       - grpc-proxy
