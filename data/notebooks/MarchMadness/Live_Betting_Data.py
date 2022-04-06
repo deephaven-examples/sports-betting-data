@@ -1,5 +1,4 @@
 from deephaven import DynamicTableWriter
-import deephaven.conversion_utils as cu
 import deephaven.Types as dht
 
 from datetime import datetime
@@ -21,31 +20,21 @@ url = "https://www.scoresandodds.com/ncaab?date=" + date_of_games
 ndp = 6
 nml = 2
 
-column_names = [
-    "Matchup", "AwayTeam_Score", "HomeTeamScore", 
-    "OU_Open", "OU_Movements", "OU_Current", "OU_Live",
-    "OU_Risk_Open", "OU_Risk_Movements", "OU_Risk_Current", "OU_Risk_Live",
-    "Spread_Open", "Spread_Movements", "Spread_Current", "Spread_Live",
-    "Spread_Risk_Open", "Spread_Risk_Movements", "Spread_Risk_Current", "Spread_Risk_Live",
-    "Away_Moneyline", "Home_Moneyline",
-    "AwayTeam_Record", "HomeTeam_Record"
-]
-
-column_types = [
-    dht.string, dht.int_, dht.int_, 
-    dht.string, dht.string_array, dht.string, dht.string, 
-    dht.int_, dht.int_array, dht.int_, dht.int_,
-    dht.double, dht.double_array, dht.double, dht.double,
-    dht.int_, dht.int_array, dht.int_, dht.int_,
-    dht.int_, dht.int_,
-    dht.string, dht.string
-]
+column_names_and_types = {
+    "Matchup": dht.string, "AwayTeam_Score": dht.int_, "HomeTeamScore": dht.int_, 
+    "OU_Open": dht.string, "OU_Movements": dht.string_array, "OU_Current": dht.string, "OU_Live": dht.string,
+    "OU_Risk_Open": dht.int_, "OU_Risk_Movements": dht.int_array, "OU_Risk_Current": dht.int_, "OU_Risk_Live": dht.int_,
+    "Spread_Open": dht.double, "Spread_Movements": dht.double_array, "Spread_Current": dht.double, "Spread_Live": dht.double,
+    "Spread_Risk_Open": dht.int_, "Spread_Risk_Movements": dht.int_array, "Spread_Risk_Current", "Spread_Risk_Live": dht.int_,
+    "Away_Moneyline": dht.int_, "Home_Moneyline": dht.int_,
+    "AwayTeam_Record": dht.string, "HomeTeam_Record": dht.string
+}
 
 table_writer = DynamicTableWriter(
-    column_names, column_types
+    column_names_and_types
 )
 
-ncaab_betting_data = table_writer.getTable()
+ncaab_betting_data = table_writer.table
 
 def pull_ncaab_betting_data(url):
 
@@ -227,7 +216,7 @@ def pull_ncaab_betting_data(url):
             away_team_record = " - ".join([str(team_wins[away_team_index]), str(team_losses[away_team_index])])
             home_team_record = " - ".join([str(team_wins[home_team_index]), str(team_losses[home_team_index])])
 
-            table_writer.logRow(
+            table_writer.write_row(
                 matchup, away_score, home_score,
                 o_u_open, o_u_moves, o_u_curr, o_u_live,
                 o_u_risk_open, o_u_risk_moves, o_u_risk_curr, o_u_risk_live,
