@@ -1,5 +1,5 @@
 from deephaven import DynamicTableWriter
-import deephaven.Types as dht
+import deephaven.dtypes as dht
 
 from datetime import datetime
 import urllib.request
