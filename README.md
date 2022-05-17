@@ -20,6 +20,6 @@ The app can be summarized in the following steps:
 
 ## Usage and updates
 
-If you use Deephaven v0.9 or earlier, replace the line with `logRowPermissive` with `logRow`.  Otherwise, it should work as intended.
+This script uses Deephaven's V2 Python API.  This script will not work with Deephaven version 0.10 or earlier.
 
 This repository will be updated for cleaner code, faster execution, and better interface.  Check the `updates.md` file for date-time tagged update information.
