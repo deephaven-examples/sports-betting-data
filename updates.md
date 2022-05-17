@@ -12,5 +12,4 @@
 
 ## Friday 05/13/2022:
 
-- Second update
-  - Fix line containing old v1 Python API syntax
+- Fix line containing old v1 Python API syntax
