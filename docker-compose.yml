@@ -1,38 +1,13 @@
 version: "3.4"
 
+
+
 services:
   server:
     image: deephaven-examples/sports-betting-data:latest
-    expose:
-      - '8080'
-    volumes:
-      - ./data:/data
-      - ./data/notebooks:/data/notebooks
-    environment:
-      - JAVA_TOOL_OPTIONS=-Xmx4g -Ddeephaven.console.type=python -Ddeephaven.application.dir=/app.d
-
-  web:
-    image: ghcr.io/deephaven/web:${VERSION:-latest}
-    expose:
-      - '80'
-    volumes:
-      - ./data:/data
-      - ./data/notebooks:/data/notebooks
-
-  grpc-proxy:
-    image: ghcr.io/deephaven/grpc-proxy:${VERSION:-latest}
-    environment:
-      - BACKEND_ADDR=server:8080
-    depends_on:
-      - server
-    expose:
-      - '8080'
-
-  envoy:
-    image: ghcr.io/deephaven/envoy:${VERSION:-latest}
-    depends_on:
-      - web
-      - grpc-proxy
-      - server
     ports:
-      - "${PORT:-10000}:10000"
+      - "${DEEPHAVEN_PORT:-10000}:10000"
+    volumes:
+      - ./data:/data
+    environment:
+      - START_OPTS=-Xmx4g

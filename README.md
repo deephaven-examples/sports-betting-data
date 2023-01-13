@@ -18,8 +18,18 @@ The app can be summarized in the following steps:
 - Pull data from ScoresAndOdds once every 15 seconds
   - This is more complex, as it parses the raw HTML from the page, and manages instances of missing data
 
-## Usage and updates
+## Usage
 
-This script uses Deephaven's V2 Python API.  This script will not work with Deephaven version 0.10 or earlier.
+This repository has the same requirements to run as [deephaven-core](https://github.com/deephaven/deephaven-core). To run, from your shell:
 
-This repository will be updated for cleaner code, faster execution, and better interface.  Check the `updates.md` file for date-time tagged update information.
+```bash
+./start.sh
+```
+
+Then, in your web browser (preferably Chrome or Firefox), navigate to `http://localhost:10000/ide/`.
+
+## Notes
+
+`scoresandodds.com` has changed since this app was written. The code has been updated to pull data for NCAAB games, but some of the fields are not populating properly. Fields include moneylines, home team record, and some spread risk metrics.
+
+If you wish to see these corrected, reach out to me on [Slack](https://deephaven.io/slack).

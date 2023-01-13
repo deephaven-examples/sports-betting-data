@@ -11,11 +11,15 @@ import re
 
 # Enter the date you'd like to inspect here
 date_of_games = datetime.today().strftime("%Y-%m-%d")
+# date_of_games = "2013-01-12"
+
+# The sport to inspect - currently, only NCAAB is supported
+sport = "ncaab"
 
 # Enter the number of times you'd like to pull here
-total_num_pulls = 2
+total_num_pulls = 100
 
-url = "https://www.scoresandodds.com/ncaab?date=" + date_of_games
+url = f"https://www.scoresandodds.com/{sport}?date={date_of_games}"
 
 ndp = 6
 nml = 2
@@ -25,7 +29,7 @@ column_names_and_types = {
     "OU_Open": dht.string, "OU_Movements": dht.string_array, "OU_Current": dht.string, "OU_Live": dht.string,
     "OU_Risk_Open": dht.int_, "OU_Risk_Movements": dht.int_array, "OU_Risk_Current": dht.int_, "OU_Risk_Live": dht.int_,
     "Spread_Open": dht.double, "Spread_Movements": dht.double_array, "Spread_Current": dht.double, "Spread_Live": dht.double,
-    "Spread_Risk_Open": dht.int_, "Spread_Risk_Movements": dht.int_array, "Spread_Risk_Current", "Spread_Risk_Live": dht.int_,
+    "Spread_Risk_Open": dht.int_, "Spread_Risk_Movements": dht.int_array, "Spread_Risk_Current": dht.double, "Spread_Risk_Live": dht.int_,
     "Away_Moneyline": dht.int_, "Home_Moneyline": dht.int_,
     "AwayTeam_Record": dht.string, "HomeTeam_Record": dht.string
 }
@@ -34,7 +38,7 @@ table_writer = DynamicTableWriter(
     column_names_and_types
 )
 
-ncaab_betting_data = table_writer.table
+betting_data = table_writer.table
 
 def pull_ncaab_betting_data(url):
 
